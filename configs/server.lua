@@ -47,7 +47,7 @@ return {
             },
             ped = {
                 model = `s_m_y_dealer_01`,
-                coords = vector4(37.3, -1457.39, 29.31, 44.69),
+                coords = vector4(-152.83, -1326.5, 32.3, 2.68),
                 nightOnly = false,
                 scenario = 'WORLD_HUMAN_AA_SMOKE',
                 target = {
