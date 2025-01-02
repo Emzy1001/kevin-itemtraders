@@ -1,5 +1,5 @@
 return {
-    webhook = 'https://discord.com/api/webhooks/1324251205886546042/sF4B6ryDObhOyC90blK47cKwi6GtWXJhckFc3y46jTy3gCbNx-8UhaNgXxeyF2bjarVu',
+    webhook = '', -- Discord webhook to send logs to
     night = {
         start = 1,
         ends = 4,
