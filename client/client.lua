@@ -44,7 +44,7 @@ local function attemptTradingItems(id, loc, item)
     Wait(1000)
     progressBar({
         label = 'Trading Items..',
-        duration = 3,
+        duration = math.random(5000, 10000),
         disable = {
             move = true,
             car = true,
