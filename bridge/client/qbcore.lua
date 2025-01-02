@@ -3,7 +3,7 @@ if GetResourceState('qb-core') ~= 'started' or GetResourceState('qbx_core') == '
 local QBCore = exports['qb-core']:GetCoreObject()
 
 function showNotify(data)
-    QBCore.Functions.Notify(data.text, data.type)
+    QBCore.Functions.Notify(data.description, data.type)
 end
 
 function progressBar(data)
@@ -13,6 +13,8 @@ function progressBar(data)
         disableMouse = false,
         disableCombat = true,
     }, {
+        animDict = data.anim.dict,
+        anim = data.anim.clip,
     }, {}, {}, function() -- Done
         data.onSuccess()
     end, function() -- Cancel

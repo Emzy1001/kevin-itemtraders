@@ -31,7 +31,7 @@ return {
                 label = 'Auto Parts Trader',
             },
             items = {
-                ['drugs'] = 230,
+                ['copper'] = 230,
                 ['iron'] = 230,
                 ['steel'] = 230,
                 ['rubber'] = 160,
