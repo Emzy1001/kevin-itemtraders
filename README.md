@@ -10,4 +10,8 @@ Drag and drop
 Adjust config to match your server
 
 Comment the line in the fxmanifest if using qbcore and not qbox
-    
+
+# Dependency
+
+* ox_lib
+* qbcore or qbox
