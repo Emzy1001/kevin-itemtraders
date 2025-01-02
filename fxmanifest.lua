@@ -2,6 +2,7 @@
 fx_version 'cerulean'
 use_experimental_fxv2_oal 'yes'
 author 'KevinGirardx'
+description 'Item Trading System'
 lua54 'yes'
 game 'gta5'
 

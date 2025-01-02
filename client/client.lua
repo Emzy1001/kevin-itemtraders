@@ -176,6 +176,17 @@ CreateThread(function ()
                 end
             end
         })
+
+        if loc.blip.use then
+            zones[id].blip = AddBlipForCoord(loc.ped.coords.x, loc.ped.coords.y, loc.ped.coords.z)
+            SetBlipSprite(zones[id].blip, loc.blip.sprite)
+            SetBlipScale(zones[id].blip, loc.blip.scale)
+            SetBlipColour(zones[id].blip, loc.blip.color)
+            SetBlipAsShortRange(zones[id].blip, true)
+            BeginTextCommandSetBlipName('STRING')
+            AddTextComponentString(loc.blip.label)
+            EndTextCommandSetBlipName(zones[id].blip)
+        end
     end
 end)
 

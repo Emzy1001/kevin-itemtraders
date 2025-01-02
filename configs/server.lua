@@ -23,6 +23,13 @@ return {
                     label = 'Sell Auto Parts',
                 },
             },
+            blip = {
+                use = true,
+                sprite = 402,
+                color = 5,
+                scale = 0.8,
+                label = 'Auto Parts Trader',
+            },
             items = {
                 ['drugs'] = 230,
                 ['iron'] = 230,
@@ -47,6 +54,13 @@ return {
                     icon = 'fa-solid fa-house-chimney-window',
                     label = 'Sell House Items',
                 },
+            },
+            blip = {
+                use = false,
+                sprite = 402,
+                color = 5,
+                scale = 0.8,
+                label = 'House Robbery Trader',
             },
             items = {
                 ['samsungphone'] = 140,
