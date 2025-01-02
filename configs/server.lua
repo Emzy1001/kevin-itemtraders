@@ -42,7 +42,7 @@ return {
             type = 'House Robbery Trader',
             reputation = {
                 use = true,
-                name = 'mechanic',
+                name = 'criminal',
                 threshold = 100,
             },
             ped = {
