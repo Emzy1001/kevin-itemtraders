@@ -42,8 +42,9 @@ return {
             type = 'House Robbery Trader',
             reputation = {
                 use = true,
-                name = 'criminal',
+                name = 'houserobbery',
                 threshold = 100,
+                reputationPayment = 100,
             },
             ped = {
                 model = `s_m_y_dealer_01`,

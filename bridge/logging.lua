@@ -89,7 +89,7 @@ local function processLogQueue()
 end
 
 function handleLog(data)
-    if not svConfig.webhook then
+    if svConfig.webhook == '' then
         lib.print.error('webhook not set')
         return
     end
