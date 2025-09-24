@@ -31,6 +31,8 @@ return {
                 label = 'Item Trader',
             },
             tradeOptions = {
+                -- New trade system: Each location can have multiple trade options
+                -- Players can choose quantity and see different reward types
                 {
                     id = 'sell_copper_cash',
                     type = 'sell', -- 'sell' for currency, 'exchange' for item

@@ -10,6 +10,8 @@ end
 local function getAvailableTradeOptions(tradeOptions)
     local cacheOptions = {}
 
+    if not tradeOptions then return nil end
+
     for _, tradeOption in pairs(tradeOptions) do
         local itemInfo = getItemInfo(tradeOption.requiredItem)
         if itemInfo then
@@ -27,6 +29,7 @@ local function getAvailableTradeOptions(tradeOptions)
         end
     end
 
+    if #cacheOptions == 0 then return nil end
     return cacheOptions
 end
 -- missheistdockssetup1leadinoutig_1 : lsdh_ig_1_argue_wade

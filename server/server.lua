@@ -30,8 +30,12 @@ local function tradeItems(source, location, tradeOption, quantity)
         return false, 'Location not found'
     end
 
-    if not tradeOption or not quantity then
-        return false, 'Invalid trade parameters'
+    if not tradeOption or not tradeOption.id or not tradeOption.requiredItem or not tradeOption.reward then
+        return false, 'Invalid trade option'
+    end
+
+    if not quantity or quantity <= 0 then
+        return false, 'Invalid quantity'
     end
 
     local isNear = isNearLocation(source, location.ped.coords)
