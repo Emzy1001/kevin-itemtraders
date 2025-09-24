@@ -6,7 +6,7 @@ return {
     },
     locations = {
         {
-            type = 'Auto Parts Trader', -- used for the log
+            type = 'Multi-Option Trader', -- used for the log
             reputation = {
                 use = true, -- use reputation system
                 name = 'mechanic', -- the name of the reputation system
@@ -20,7 +20,7 @@ return {
                 scenario = 'WORLD_HUMAN_COP_IDLES',
                 target = {
                     icon = 'fa-solid fa-hand-holding-dollar',
-                    label = 'Sell Auto Parts',
+                    label = 'Trade Items',
                 },
             },
             blip = {
@@ -28,47 +28,34 @@ return {
                 sprite = 402,
                 color = 5,
                 scale = 0.8,
-                label = 'Auto Parts Trader',
+                label = 'Item Trader',
             },
-            items = {
-                ['copper'] = 230,
-                ['iron'] = 230,
-                ['steel'] = 230,
-                ['rubber'] = 160,
-                ['lockpick'] = 230,
-            }
-        },
-        {
-            type = 'House Robbery Trader',
-            reputation = {
-                use = true,
-                name = 'houserobbery',
-                threshold = 100,
-                reputationPayment = 100,
-            },
-            ped = {
-                model = `s_m_y_dealer_01`,
-                coords = vector4(-152.83, -1326.5, 32.3, 2.68),
-                nightOnly = false,
-                scenario = 'WORLD_HUMAN_AA_SMOKE',
-                target = {
-                    icon = 'fa-solid fa-house-chimney-window',
-                    label = 'Sell House Items',
+            tradeOptions = {
+                {
+                    id = 'sell_copper_cash',
+                    type = 'sell', -- 'sell' for currency, 'exchange' for item
+                    label = 'Sell Copper for Cash',
+                    description = 'Exchange copper for money',
+                    icon = 'fa-solid fa-dollar-sign',
+                    requiredItem = 'copper',
+                    reward = {
+                        type = 'cash',
+                        amount = 230
+                    }
                 },
-            },
-            blip = {
-                use = false,
-                sprite = 402,
-                color = 5,
-                scale = 0.8,
-                label = 'House Robbery Trader',
-            },
-            items = {
-                ['samsungphone'] = 140,
-                ['rolex'] = 140,
-                ['goldchain'] = 140,
-                ['toaster'] = 140,
-                ['microwave'] = 300,
+                {
+                    id = 'exchange_copper_lockpick',
+                    type = 'exchange',
+                    label = 'Exchange Copper for Lockpick',
+                    description = 'Trade copper for lockpicks',
+                    icon = 'fa-solid fa-key',
+                    requiredItem = 'copper',
+                    reward = {
+                        type = 'item',
+                        item = 'lockpick',
+                        amount = 1
+                    }
+                }
             }
         },
     }

@@ -7,6 +7,10 @@ function removeItem(source, item, amount, metadata)
     return ox_inventory:RemoveItem(source, item, amount, metadata)
 end
 
+function addItem(source, item, amount, metadata)
+    return ox_inventory:AddItem(source, item, amount, metadata)
+end
+
 function getItemCount(source, item)
     local count = ox_inventory:GetItem(source, item, nil, true)
     if count then

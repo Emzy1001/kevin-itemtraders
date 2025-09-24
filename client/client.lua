@@ -4,29 +4,34 @@ local zones = {}
 
 local function isNightTime()
     local time = GetClockHours()
-    return time >= svConfig.nightTime.start and time <= svConfig.nightTime.ends
+    return time >= svConfig.night.start and time <= svConfig.night.ends
 end
 
-local function getAvailableItems(items)
-    local cacheItems = {}
+local function getAvailableTradeOptions(tradeOptions)
+    local cacheOptions = {}
 
-    for itemName, price in pairs(items) do
-        local itemInfo = getItemInfo(itemName)
-        if not itemInfo then return end
-
-        cacheItems[#cacheItems+1] = {
-            name = itemName,
-            label = itemInfo.label,
-            amount = itemInfo.amount,
-            price = price,
-        }
+    for _, tradeOption in pairs(tradeOptions) do
+        local itemInfo = getItemInfo(tradeOption.requiredItem)
+        if itemInfo then
+            cacheOptions[#cacheOptions+1] = {
+                id = tradeOption.id,
+                type = tradeOption.type,
+                label = tradeOption.label,
+                description = tradeOption.description,
+                icon = tradeOption.icon,
+                requiredItem = tradeOption.requiredItem,
+                itemLabel = itemInfo.label,
+                availableAmount = itemInfo.amount,
+                reward = tradeOption.reward,
+            }
+        end
     end
 
-    return cacheItems
+    return cacheOptions
 end
 -- missheistdockssetup1leadinoutig_1 : lsdh_ig_1_argue_wade
-local function attemptTradingItems(id, loc, item)
-    if not DoesEntityExist(zones[id].ped) and not item then return end
+local function attemptTradingItems(id, loc, tradeOption)
+    if not DoesEntityExist(zones[id].ped) or not tradeOption then return end
 
     if loc.reputation.use then
         local playerReputation = lib.callback.await('kevin-itemtrader:server:getPlayerReputation', false, loc.reputation.name)
@@ -38,6 +43,47 @@ local function attemptTradingItems(id, loc, item)
             })
             return
         end
+    end
+
+    -- Check if player has any of the required item
+    if tradeOption.availableAmount <= 0 then
+        showNotify({
+            title = 'Item Trader',
+            description = 'You do not have any ' .. tradeOption.itemLabel,
+            type = 'error',
+        })
+        return
+    end
+
+    -- Prompt for quantity
+    local input = lib.inputDialog('Trade Amount', {
+        {
+            type = 'number',
+            label = 'Amount to trade',
+            description = 'How many ' .. tradeOption.itemLabel .. ' do you want to trade? (Available: ' .. tradeOption.availableAmount .. ')',
+            required = true,
+            min = 1,
+            max = tradeOption.availableAmount
+        }
+    })
+
+    if not input or not input[1] then
+        showNotify({
+            title = 'Item Trader',
+            description = 'Trade cancelled',
+            type = 'error',
+        })
+        return
+    end
+
+    local quantity = input[1]
+    if quantity <= 0 or quantity > tradeOption.availableAmount then
+        showNotify({
+            title = 'Item Trader',
+            description = 'Invalid quantity',
+            type = 'error',
+        })
+        return
     end
 
     TaskTurnPedToFaceEntity(cache.ped, zones[id].ped, 1000)
@@ -56,7 +102,7 @@ local function attemptTradingItems(id, loc, item)
             clip = 'lsdh_ig_1_argue_wade',
         },
         onSuccess = function ()
-            local traded, response = lib.callback.await('kevin-itemtrader:server:tradeItems', false, loc, item)
+            local traded, response = lib.callback.await('kevin-itemtrader:server:tradeItems', false, loc, tradeOption, quantity)
             if not traded then
                 showNotify({
                     title = 'Item Trader',
@@ -67,7 +113,7 @@ local function attemptTradingItems(id, loc, item)
             end
             showNotify({
                 title = 'Item Trader',
-                description = 'You have successfully traded ' .. item.label,
+                description = response,
                 type = 'success',
             })
         end,
@@ -84,33 +130,44 @@ end
 local function getMenuOptions(id, loc)
     local cacheOptions = {}
     local playerReputation = lib.callback.await('kevin-itemtrader:server:getPlayerReputation', false, loc.reputation.name)
-    local availableItems = getAvailableItems(loc.items)
-    if not availableItems then return end
+    local availableTradeOptions = getAvailableTradeOptions(loc.tradeOptions)
+    if not availableTradeOptions then return end
+    
     cacheOptions[#cacheOptions+1] = {
         readOnly = true,
         iconColor = '#ff0000',
         icon = 'fa-solid fa-chart-simple',
-        title = 'Reptation: ' .. playerReputation,
+        title = 'Reputation: ' .. playerReputation,
         description = 'You need ' .. loc.reputation.threshold .. ' reputation to trade',
     }
 
-    for k, v in pairs(availableItems) do
-        if v.amount == 0 then
+    for k, v in pairs(availableTradeOptions) do
+        if v.availableAmount == 0 then
             cacheOptions[#cacheOptions+1] = {
                 iconColor = '#ff0000',
-                icon = 'fa-solid fa-tag',
+                icon = v.icon,
                 iconAnimation = 'beat',
                 title = v.label,
-                description = 'You have none available',
+                description = 'You have no ' .. v.itemLabel .. ' available',
                 readOnly = true,
             }
         else
+            local rewardText = ''
+            if v.reward.type == 'cash' then
+                rewardText = 'Reward: $' .. v.reward.amount .. ' per item'
+            elseif v.reward.type == 'item' then
+                local rewardItemInfo = getItemInfo(v.reward.item)
+                if rewardItemInfo then
+                    rewardText = 'Reward: ' .. v.reward.amount .. 'x ' .. rewardItemInfo.label .. ' per item'
+                end
+            end
+            
             cacheOptions[#cacheOptions+1] = {
                 iconColor = '#00ff00',
-                icon = 'fa-solid fa-tag',
+                icon = v.icon,
                 iconAnimation = 'beat',
                 title = v.label,
-                description = 'Price: $' .. v.price,
+                description = rewardText .. ' | Available: ' .. v.availableAmount,
                 onSelect = function ()
                     attemptTradingItems(id, loc, v)
                 end,
@@ -127,7 +184,7 @@ local function openTraderMenu(id, loc)
     if not menuOptions then return end
     lib.registerContext({
         id = 'item_trader_menu',
-        title = 'What I\'m Buying',
+        title = 'Trade Options',
         options = menuOptions,
     })
     lib.showContext('item_trader_menu')
